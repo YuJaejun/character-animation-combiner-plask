@@ -7,6 +7,7 @@ In this repo, you can try out the Plask SDK.
 Enter the URL where you can download the video and enter the segment you want to extract the motion from.
 For example, if you want to mocap a video between 3 and 10 seconds, enter 3 as the Start Time and 10 as the End Time.
 See below for more information about Plask SDK methods and how to use them.
+- [Plask SDK](https://www.npmjs.com/package/@plask-ai/client?activeTab=readme)
 
 ## Run Locally
 
