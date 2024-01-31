@@ -20,7 +20,7 @@ export default function ClientButton() {
     async function initializeClient() {
       try {
         const client = new Client();
-        await client.signIn("", ""); // Use environment variables or another secure method to handle credentials
+        await client.signIn("example@some.com", "password1234"); // TODO: change to your own email and password -> motion.plask.ai
         client.onMessageReceived((message) => {
             if (message.includes("Done")) {
                 const beforeFilter = JSON.parse(message);
