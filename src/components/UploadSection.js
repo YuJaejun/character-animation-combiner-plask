@@ -1,5 +1,6 @@
 import React from "react";
 import UploadButton from "./UploadButton";
+import ClientButton from "./PlaskClient";
 
 const UploadSection = ({ onMainModelUpload, onAnimationUpload }) => {
   return (
@@ -16,6 +17,10 @@ const UploadSection = ({ onMainModelUpload, onAnimationUpload }) => {
           multiple={true}
           accept=".fbx"
         />
+      </li>
+      <li className="collection-header grey darken-3 white-text">
+        <h5>Plask sdk request</h5>
+        <ClientButton />
       </li>
     </ul>
   );

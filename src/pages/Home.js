@@ -48,6 +48,7 @@ const Home = () => {
               object.animations[0].name = fileName;
             }
           }
+          console.log("object.animations", object.animations);
           addAnimations(object.animations);
         });
       });

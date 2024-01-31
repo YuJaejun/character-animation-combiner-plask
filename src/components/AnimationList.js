@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Context as ModalContext } from "../context/ModelContext";
+import { AnimationClip, VectorKeyframeTrack, QuaternionKeyframeTrack } from 'three';
 
 const AnimationList = () => {
   const {
@@ -18,6 +19,7 @@ const AnimationList = () => {
     if (action) {
       action.play();
     }
+    console.log(animations)
   }, [action]);
 
   useEffect(() => {
