@@ -20,7 +20,7 @@ export default function ClientButton() {
     async function initializeClient() {
       try {
         const client = new Client();
-        await client.signIn("yujaejun0925@postech.ac.kr", "yu990925"); // Use environment variables or another secure method to handle credentials
+        await client.signIn("", ""); // Use environment variables or another secure method to handle credentials
         client.onMessageReceived((message) => {
             if (message.includes("Done")) {
                 const beforeFilter = JSON.parse(message);
