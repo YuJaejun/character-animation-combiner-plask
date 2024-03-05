@@ -20,11 +20,11 @@ export default function ClientButton() {
     async function initializeClient() {
       try {
         const client = new Client();
-        await client.signIn("example@some.com", "password1234"); // TODO: change to your own email and password -> motion.plask.ai
+        await client.signIn("yujaejun0925@postech.ac.kr", "@yu990925"); // TODO: change to your own email and password -> motion.plask.ai
         client.onMessageReceived((message) => {
             if (message.includes("Done")) {
                 const beforeFilter = JSON.parse(message);
-                const afterFilter = client.applyFilter(beforeFilter);
+                const afterFilter = client.applyFilter(message);
                 const animationClip = createAnimationClip(afterFilter)
                 addAnimations([animationClip]);
             } else {
@@ -51,6 +51,7 @@ export default function ClientButton() {
   const onClick = async () => {
     if (client && videoUrl) {
       const request = {
+        jobId: "test",
         task: "pose_estimation",
         input: {
           fileUrl: videoUrl,
