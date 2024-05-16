@@ -20,13 +20,19 @@ export default function ClientButton() {
     async function initializeClient() {
       try {
         const client = new Client();
-        await client.signIn("example@plask.ai", "password"); // TODO: change to your own email and password -> motion.plask.ai
+        await client.signIn("example@email.com", "passward"); // TODO: change to your own email and password -> motion.plask.ai
         client.onMessageReceived((message) => {
             if (message.includes("Done")) {
                 const beforeFilter = JSON.parse(message);
-                const afterFilter = client.applyFilter(message);
-                const animationClip = createAnimationClip(afterFilter)
-                addAnimations([animationClip]);
+                console.log(beforeFilter);
+                let animationClip;
+                if (Array.isArray(beforeFilter.output.data)) {
+                  const afterFilter = client.applyFilter(beforeFilter);
+                  animationClip = createAnimationClip(afterFilter)
+                } else {
+                  animationClip = createAnimationClip(beforeFilter)
+                }
+                addAnimations(animationClip);
             } else {
                 console.log(message);
             }

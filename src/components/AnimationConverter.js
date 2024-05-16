@@ -30,76 +30,52 @@ const MIXAMO_MAP = {
 const createAnimationClip = (jsonData) => {
     const tracks = [];
     const fps = jsonData.output.fps;
-    const bonesData =jsonData.output.data;
+    const bonesData = jsonData.output.data;
     console.log(bonesData)
 
-    bonesData.forEach((bone) => {
-      console.log(bone)
-      const boneName = bone.name;
-      if (!boneName) return;
-      const frameTimes = [];
-      const values = [];
-      console.log(boneName, bone.property, bone.keyframes.length)
-      bone.keyframes.forEach(keyframe => {
-          const frameTime = keyframe.frame / fps;
-          frameTimes.push(frameTime);
+    if (Array.isArray(bonesData)) {
+      bonesData.forEach((bone) => {
+        console.log(bone)
+        const boneName = bone.name;
+        if (!boneName) return;
+        const frameTimes = [];
+        const values = [];
+        console.log(boneName, bone.property, bone.keyframes.length)
+        bone.keyframes.forEach(keyframe => {
+            const frameTime = keyframe.frame / fps;
+            frameTimes.push(frameTime);
 
-          // Flatten the value array for position or quaternion
-          keyframe.value.forEach(value => {
-              values.push(value);
-          });
+            // Flatten the value array for position or quaternion
+            keyframe.value.forEach(value => {
+                values.push(value);
+            });
+        });
+
+        let track
+        if (bone.property === 'position') {
+          // value * 100
+          track = new THREE.VectorKeyframeTrack(`${MIXAMO_MAP[boneName]}.position`, frameTimes, values.map(v => v * 100));
+        } else if (bone.property === 'rotationQuaternion') {
+          track = new THREE.QuaternionKeyframeTrack(`${MIXAMO_MAP[boneName]}.quaternion`, frameTimes, values);
+        }
+
+        if(track) {
+          tracks.push(track);
+        }
       });
-
-      let track
-      if (bone.property === 'position') {
-        track = new THREE.VectorKeyframeTrack(`${MIXAMO_MAP[boneName]}.position`, frameTimes, values);
-      } else if (bone.property === 'rotationQuaternion') {
-        track = new THREE.QuaternionKeyframeTrack(`${MIXAMO_MAP[boneName]}.quaternion`, frameTimes, values);
+      
+      return [new THREE.AnimationClip(jsonData.fileName, -1, tracks)];
+    } else if (typeof bonesData === 'object') {
+      //각 Key를 fileName 앞에 붙여주고 value마다 AnimationClip을 만들어서 리턴
+      const clips = [];
+      for (const key in bonesData) {
+        const boneData = bonesData[key];
+        const fileName = key + '_' + jsonData.fileName;
+        const clip = createAnimationClip({fileName: fileName, output: {fps: jsonData.output.fps, data: boneData}});
+        clips.push(clip[0]);
       }
-
-      if(track) {
-        tracks.push(track);
-      }
-    });
-
-    
-  
-    // for (const boneName in bonesData) {
-    //     const boneData = bonesData[boneName];
-    //     const positionTimes = [];
-    //     const positionValues = [];
-    //     const quaternionTimes = [];
-    //     const quaternionValues = [];
-    
-    //     // 위치 데이터 처리
-    //     if (boneData['position.x']) {
-    //       for (let i = 0; i < boneData['position.x'].length; i++) {
-    //         positionTimes.push(i / fps);
-    //         positionValues.push(
-    //           boneData['position.x'][i][i.toString()],
-    //           boneData['position.y'][i][i.toString()],
-    //           boneData['position.z'][i][i.toString()]
-    //         );
-    //       }
-    //       tracks.push(new THREE.VectorKeyframeTrack(`${MIXAMO_MAP[boneName]}.position`, positionTimes, positionValues));
-    //     }
-    
-    //     // 회전 데이터 처리
-    //     if (boneData['quaternionRotation.x']) {
-    //       for (let i = 0; i < boneData['quaternionRotation.x'].length; i++) {
-    //         quaternionTimes.push(i / fps);
-    //         quaternionValues.push(
-    //           boneData['quaternionRotation.x'][i][i.toString()],
-    //           boneData['quaternionRotation.y'][i][i.toString()],
-    //           boneData['quaternionRotation.z'][i][i.toString()],
-    //           boneData['quaternionRotation.w'][i][i.toString()]
-    //         );
-    //       }
-    //       tracks.push(new THREE.QuaternionKeyframeTrack(`${MIXAMO_MAP[boneName]}.quaternion`, quaternionTimes, quaternionValues));
-    //     }
-    //   }
-    
-    return new THREE.AnimationClip(jsonData.fileName, -1, tracks);
+      return clips;
+    }
 }
 
 export default createAnimationClip;
